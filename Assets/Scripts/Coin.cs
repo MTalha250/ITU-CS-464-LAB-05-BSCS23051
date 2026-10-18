@@ -2,6 +2,9 @@ using UnityEngine;
 
 public class Coin : MonoBehaviour
 {
+    public enum Kind { Gold, Red }
+
+    [SerializeField] Kind kind = Kind.Gold;
     [SerializeField] int value = 1;
     [SerializeField] float spinSpeed = 90f;
 
@@ -12,7 +15,8 @@ public class Coin : MonoBehaviour
         Debug.Log($"Coin touched by {other.name}");
         if (other.CompareTag("Player"))
         {
-            GameManager.Instance.AddScore(value);
+            if (kind == Kind.Red) GameManager.Instance.CollectRedCoin();
+            else GameManager.Instance.AddScore(value);
             Destroy(gameObject);
         }
     }

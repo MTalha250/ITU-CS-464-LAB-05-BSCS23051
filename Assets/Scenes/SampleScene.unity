@@ -966,6 +966,9 @@ MonoBehaviour:
   targetScore: 10
   scoreText: {fileID: 228120102}
   winPanel: {fileID: 1649278724}
+  redCoinPrefab: {fileID: 5348292778058100924, guid: 5a90e229876c14e679128979ca133d2a, type: 3}
+  player: {fileID: 468906992}
+  area: 7
 --- !u!4 &599568699
 Transform:
   m_ObjectHideFlags: 0
