@@ -1,37 +1,46 @@
 # ITU-CS-464-LAB-05-BSCS23051
 
 **Course:** CS-464 Game Development, Information Technology University
-**Lab 05:** Roll-a-Ball (Lecture 06: Physics, Forces & Collectibles)
+**Lab 05:** Roll-a-Ball (Lecture 06)
 **Name:** Muhammad Talha
 **Roll number:** BSCS23051
 
-![Mid-bonus: the ring of blue coins and the BonusCoins counter](Docs/screenshot.png)
+![Screenshot](Docs/screenshot.png)
 
-## The game
+## About
 
-Roll the ball with **WASD** or the arrow keys and collect the gold coins. Collect 10 to win; **Restart** starts a new game.
+This is the Roll-a-Ball game from Lecture 06, plus the three extra tasks.
 
-It is the Lecture 06 collect-a-thon, built from its four scripts:
+You move the ball with WASD or the arrow keys and pick up the gold coins. Get 10 and you win, and the Restart button starts the game again.
 
-| Script | What it does |
-|---|---|
-| `PlayerController.cs` | Pushes the ball with `AddForce` every physics step. Input is read in `Update` from the Input System's Move action and clamped so diagonals aren't faster. |
-| `Spawner.cs` | `InvokeRepeating` drops a gold coin every 1.5 s at a random spot, at most 5 at a time, and never within 2 m of the player. |
-| `Coin.cs` | Spins, and on `OnTriggerEnter` with the Player tag reports to the GameManager and destroys itself. |
-| `GameManager.cs` | Owns the score, the text, the win panel (`Time.timeScale = 0`) and the restart (`timeScale` back to 1 first). |
+I used the four scripts from the lecture:
 
-## The three tasks
+- **PlayerController.cs** moves the ball with AddForce. I read input from the Input System's Move action instead of Input.GetAxis, because my project is set to the new Input System only.
+- **Spawner.cs** spawns a gold coin every 1.5 s at a random spot, with a maximum of 5 at a time. It won't put one right next to the player.
+- **Coin.cs** makes the coin spin. When the player touches it, it tells the GameManager and destroys itself.
+- **GameManager.cs** keeps the score, updates the text, shows the win panel and handles Restart.
 
-**1. One red coin at a random score.** At the start of the game, `GameManager` picks `redCoinScore = Random.Range(1, 10)`, so a score from 1 to 9. When the score reaches exactly that number, it spawns one `RedCoin` somewhere in the arena, away from the player. The score only goes up by 1 at a time, so it hits that number once and only one red coin ever spawns. It stops at 9 so the coin can still be collected before the win at 10 freezes the game.
+## Task 1: Red coin
 
-**2. Fifty blue coins in a circle.** Collecting the red coin calls `CollectRedCoin()`. That spawns 50 `BlueCoin`s on a circle of radius 5 m around the player, one every 360° / 50 = 7.2°, using `cos` and `sin` of the angle. Coins that would land outside the walls are clamped inside the arena.
+When the game starts, the GameManager picks a random score from 1 to 9 (`Random.Range(1, 10)`). When the score gets to that number, one red coin spawns somewhere in the arena. Since the score only goes up by 1 each time, it can only hit that number once, so you only ever get one red coin.
 
-**3. The hidden BonusCoins text.** `BonusText` sits in the Canvas but starts inactive. When the blue coins appear, it is switched on showing `BonusCoins: 0/50`. Each blue coin collected adds one, so it counts up to `BonusCoins: 50/50`. Blue coins don't count towards the score of 10.
+I didn't go up to 10 because the game freezes when you win at 10, and then you'd never be able to collect the red coin.
 
-All three coins use the same `Coin` prefab setup: a trigger Sphere Collider and `Coin.cs`, with a `kind` field (Gold, Red or Blue) that decides what the GameManager is told.
+The Console prints which score the red coin will come at, which makes it easier to test.
 
-## Project
+## Task 2: Blue coins
 
+When you pick up the red coin, 50 blue coins spawn in a circle around the player, 5 m away. To get the positions I split 360° into 50 angles and used cos and sin for x and z. If the player is near a wall, some of the circle would end up outside the arena, so I clamp those coins to stay inside.
+
+Blue coins don't add to the normal score.
+
+## Task 3: BonusCoins text
+
+There's a BonusCoins text in the top right corner that starts hidden. When the blue coins spawn it turns on and shows `BonusCoins: 0/50`, and it goes up by one for each blue coin you collect.
+
+## Notes
+
+- All three coin types use the same Coin script. It has a `kind` setting (Gold, Red or Blue) so the GameManager knows what was picked up.
 - Unity 6.3 (6000.6.3f1), Universal 3D template
 - Scene: `Assets/Scenes/SampleScene.unity`
-- Prefabs: `Assets/Prefabs/Coin`, `RedCoin`, `BlueCoin`
+- Prefabs: `Coin`, `RedCoin` and `BlueCoin` in `Assets/Prefabs`
