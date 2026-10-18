@@ -14,7 +14,13 @@ public class GameManager : MonoBehaviour
     [SerializeField] Transform player;
     [SerializeField] float area = 7f;
 
-    int score, redCoinScore;
+    [Header("Bonus coins")]
+    [SerializeField] GameObject blueCoinPrefab;
+    [SerializeField] int bonusCount = 50;
+    [SerializeField] float bonusRadius = 5f;
+    [SerializeField] float arenaEdge = 9f;         // keep the ring inside the walls
+
+    int score, redCoinScore, bonusCoins;
 
     void Awake() => Instance = this;
 
@@ -41,7 +47,25 @@ public class GameManager : MonoBehaviour
         Instantiate(redCoinPrefab, pos, Quaternion.identity);
     }
 
-    public void CollectRedCoin() => Debug.Log("Red coin collected");
+    public void CollectRedCoin()
+    {
+        // a ring of blue coins around the player
+        for (int i = 0; i < bonusCount; i++)
+        {
+            float angle = i * Mathf.PI * 2f / bonusCount;
+            Vector3 pos = player.position + new Vector3(Mathf.Cos(angle), 0f, Mathf.Sin(angle)) * bonusRadius;
+            pos.x = Mathf.Clamp(pos.x, -arenaEdge, arenaEdge);
+            pos.z = Mathf.Clamp(pos.z, -arenaEdge, arenaEdge);
+            pos.y = 0.5f;
+            Instantiate(blueCoinPrefab, pos, Quaternion.identity);
+        }
+    }
+
+    public void CollectBonusCoin()
+    {
+        bonusCoins++;
+        Debug.Log($"Bonus coins: {bonusCoins}/{bonusCount}");
+    }
 
     void UpdateUI() => scoreText.text = $"Score: {score} / {targetScore}";
 

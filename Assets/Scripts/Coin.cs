@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class Coin : MonoBehaviour
 {
-    public enum Kind { Gold, Red }
+    public enum Kind { Gold, Red, Blue }
 
     [SerializeField] Kind kind = Kind.Gold;
     [SerializeField] int value = 1;
@@ -16,6 +16,7 @@ public class Coin : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             if (kind == Kind.Red) GameManager.Instance.CollectRedCoin();
+            else if (kind == Kind.Blue) GameManager.Instance.CollectBonusCoin();
             else GameManager.Instance.AddScore(value);
             Destroy(gameObject);
         }
