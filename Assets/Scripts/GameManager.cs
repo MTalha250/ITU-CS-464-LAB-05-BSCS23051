@@ -19,6 +19,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] int bonusCount = 50;
     [SerializeField] float bonusRadius = 5f;
     [SerializeField] float arenaEdge = 9f;         // keep the ring inside the walls
+    [SerializeField] TMP_Text bonusText;           // hidden until the red coin is collected
 
     int score, redCoinScore, bonusCoins;
 
@@ -59,15 +60,21 @@ public class GameManager : MonoBehaviour
             pos.y = 0.5f;
             Instantiate(blueCoinPrefab, pos, Quaternion.identity);
         }
+        bonusText.gameObject.SetActive(true);
+        UpdateUI();
     }
 
     public void CollectBonusCoin()
     {
         bonusCoins++;
-        Debug.Log($"Bonus coins: {bonusCoins}/{bonusCount}");
+        UpdateUI();
     }
 
-    void UpdateUI() => scoreText.text = $"Score: {score} / {targetScore}";
+    void UpdateUI()
+    {
+        scoreText.text = $"Score: {score} / {targetScore}";
+        bonusText.text = $"BonusCoins: {bonusCoins}/{bonusCount}";
+    }
 
     void Win()
     {
